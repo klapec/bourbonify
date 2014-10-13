@@ -1,0 +1,10 @@
+.page-content {
+  @include outer-container();
+  padding-top: $gutter * 3;
+  padding-bottom: $gutter * 8;
+
+  h1 {
+    line-height: 1em;
+  };
+}
+

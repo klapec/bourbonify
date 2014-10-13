@@ -1,0 +1,51 @@
+.wrapper-footer {
+  background: #7B8B8C;
+}
+
+.footer-main {
+  @include outer-container();
+  color: #fff;
+  padding-top: $gutter;
+  padding-bottom: $gutter;
+  font-weight: 300;
+
+  div {
+    @include span-columns(4 of 12);
+    font-size: 0.7em;
+    font-weight: 300;
+    text-transform: uppercase;
+    @include media($small) {
+      @include span-columns(4);
+      margin-bottom: 2em;
+    };
+  };
+
+  a {
+    color: #fff;
+    font-weight: 700;
+
+    &:hover {
+      color: #BAC1C6;
+      text-decoration: none;
+    };
+  };
+}
+
+.footer-details-social {
+  svg {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+
+    path {
+      fill: #fff;
+    };
+  };
+}
+
+.footer-details-description {
+  p {
+    margin: 0;
+  };
+}
