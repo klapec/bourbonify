@@ -13,12 +13,12 @@ By default there are included:
  - browser-sync
  - concat
  - htmlmin
- - imagemin *(currently disabled)*
+ - imagemin
  - jshint
  - minify-css
  - ruby-sass
  - uglify
-- [jQuery](http://jquery.com), javascript library (doesn't need introduction).
+- [jQuery](http://jquery.com), javascript library.
 
 ## How to use
 1. Make sure you have ``git``, ``nodejs``, ``npm`` and ``bower`` installed,
