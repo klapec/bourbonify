@@ -24,4 +24,5 @@ By default there are included:
 1. Make sure you have ``git``, ``nodejs``, ``npm`` and ``bower`` installed,
 2. Clone the repo (``git clone https://github.com/klapec/bourbonify.git``) and ``cd`` into it,
 3. Run ``npm install``,
-4. Run ``gulp``.
+4. Run ``gulp build``,
+5. Run ``gulp``.

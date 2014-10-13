@@ -1,11 +1,41 @@
 var gulp = require('gulp');
 var browserSync = require('browser-sync');
+var del = require('del');
 var jshintStylish = require('jshint-stylish');
 var $ = require('gulp-load-plugins')();
 
-gulp.task('build', ['html', 'styles', 'scripts'], function() {});
+gulp.task('build', ['depsDownload', 'depsInstall', 'depsFix'], function() {});
 
-gulp.task('default', ['build'],  function() {
+gulp.task('depsDownload', function() {
+  var stream = gulp.src('bower.json')
+    .pipe($.install());
+    return stream;
+});
+
+gulp.task('depsInstall', ['depsDownload'] ,function() {
+  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'normalize.css/**/*']);
+  var jquery = $.filter('jquery/dist/jquery.js');
+  var stream = gulp.src('bower_components/**/*')
+    .pipe(cssStack)
+    .pipe(gulp.dest('assets/css/1-vendor'))
+    .pipe(cssStack.restore())
+    .pipe(jquery)
+    .pipe(gulp.dest('assets/js/vendor'))
+    .pipe(jquery.restore());
+    return stream;
+});
+
+// Sass doesn't yet support importing css as sass files
+// https://github.com/sass/sass/issues/556
+// This task is needed for normalize to be properly imported into our project
+gulp.task('depsFix', ['depsInstall'], function() {
+  var stream = gulp.src(['assets/css/1-vendor/normalize.css/normalize.css'])
+    .pipe($.rename('_normalize.scss'))
+    .pipe(gulp.dest('assets/css/1-vendor/normalize.css'));
+    return stream;
+});
+
+gulp.task('default', ['html', 'styles', 'scripts', 'images'],  function() {
   browserSync({
     server: {
       baseDir: 'dist'
@@ -71,4 +101,8 @@ gulp.task('images', function() {
     //   showFiles: true,
     //   title: "Images size after optimizing:"
     // }));
+});
+
+gulp.task('clean', function() {
+  return del(['dist', 'assets/css/1-vendor/*', '!assets/css/1-vendor/_1-dir.scss', 'assets/js/vendor/*', 'assets/js/main.min.js', 'assets/js/vendor.min.js', 'bower_components'], { read: false });
 });
