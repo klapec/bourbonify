@@ -1,4 +1,14 @@
-// Your script goes here
-// ... or in any other .js file in this directory!
+$(document).ready(function() {
+  var menu = $('.centered-navigation-menu');
+  var menuToggle = $('.centered-navigation-menu-button');
+  var signUp = $('.sign-up');
 
-var test = 3;
+  $(menuToggle).on('click', function(e) {
+    e.preventDefault();
+    menu.slideToggle(function(){
+      if(menu.is(':hidden')) {
+        menu.removeAttr('style');
+      }
+    });
+  });
+});

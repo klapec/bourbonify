@@ -11,6 +11,7 @@ var basePath = {
 };
 
 var srcAssets = {
+  markup        : '*.html',
   styles        : basePath.src + 'stylesheets/',
   scripts       : basePath.src + 'scripts/',
   vendorScripts : basePath.src + 'scripts/vendor/',
@@ -50,7 +51,7 @@ gulp.task('depsDownload', function() {
 });
 
 gulp.task('depsInstall', ['depsDownload'] ,function() {
-  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'normalize.css/**/*']);
+  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'bitters/**/*', 'normalize.css/**/*']);
   var jquery = $.filter('jquery/dist/jquery.js');
   var stream = gulp.src('bower_components/**/*')
     .pipe($.plumber({errorHandler: errorAlert}))
@@ -77,10 +78,20 @@ gulp.task('default', ['styles', 'scripts', 'vendorScripts', 'images'],  function
       baseDir: "./"
     }
   });
+  gulp.watch(srcAssets.markup, ['markup', browserSync.reload]);
   gulp.watch(srcAssets.styles + '**/*.scss', ['styles', browserSync.reload]);
   gulp.watch(srcAssets.scripts + '*.js', ['scripts', browserSync.reload]);
   gulp.watch(srcAssets.vendorScripts + '**/*.js', ['vendorScripts', browserSync.reload]);
   gulp.watch(srcAssets.images, ['images', browserSync.reload]);
+});
+
+gulp.task('markup', function() {
+  return gulp.src(srcAssets.markup)
+    .pipe($.notify({
+        title: "Markup refreshed",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
 });
 
 gulp.task('styles', function() {
