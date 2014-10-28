@@ -1,13 +1,50 @@
-var gulp = require('gulp');
-var browserSync = require('browser-sync');
-var del = require('del');
+var gulp          = require('gulp');
+var gutil         = require('gulp-util');
+var browserSync   = require('browser-sync');
+var del           = require('del');
 var jshintStylish = require('jshint-stylish');
-var $ = require('gulp-load-plugins')();
+var $             = require('gulp-load-plugins')();
 
-gulp.task('build', ['depsDownload', 'depsInstall', 'depsFix'], function() {});
+var basePath = {
+  src   : 'assets/src/',
+  dest  : 'assets/public/'
+};
+
+var srcAssets = {
+  styles        : basePath.src + 'stylesheets/',
+  scripts       : basePath.src + 'scripts/',
+  vendorScripts : basePath.src + 'scripts/vendor/',
+  images        : basePath.src + 'images/**/*'
+};
+
+var destAssets = {
+  styles        : basePath.dest + 'stylesheets/',
+  scripts       : basePath.dest + 'scripts/',
+  vendorScripts : basePath.dest + 'scripts/',
+  images        : basePath.dest + 'images/'
+};
+
+function errorAlert(err) {
+  $.notify.onError({
+    title: "Gulp Error",
+    message: "Check your terminal",
+    sound: "Basso"
+  })(err);
+  gutil.log(gutil.colors.red(err.toString()));
+  this.emit("end");
+}
+
+gulp.task('build', ['depsDownload', 'depsInstall', 'depsFix'], function() {
+  $.notify({
+      title: "Dependencies installed",
+      message: "<%= file.relative %>",
+      sound: "Glass"
+  });
+});
 
 gulp.task('depsDownload', function() {
   var stream = gulp.src('bower.json')
+    .pipe($.plumber({errorHandler: errorAlert}))
     .pipe($.install());
     return stream;
 });
@@ -16,93 +53,102 @@ gulp.task('depsInstall', ['depsDownload'] ,function() {
   var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'normalize.css/**/*']);
   var jquery = $.filter('jquery/dist/jquery.js');
   var stream = gulp.src('bower_components/**/*')
+    .pipe($.plumber({errorHandler: errorAlert}))
     .pipe(cssStack)
-    .pipe(gulp.dest('assets/css/1-vendor'))
+    .pipe(gulp.dest(srcAssets.styles + 'vendor'))
     .pipe(cssStack.restore())
     .pipe(jquery)
-    .pipe(gulp.dest('assets/js/vendor'))
+    .pipe(gulp.dest(srcAssets.scripts + 'vendor'))
     .pipe(jquery.restore());
     return stream;
 });
 
-// Sass doesn't yet support importing css as sass files
-// https://github.com/sass/sass/issues/556
-// This task is needed for normalize to be properly imported into our project
 gulp.task('depsFix', ['depsInstall'], function() {
-  var stream = gulp.src(['assets/css/1-vendor/normalize.css/normalize.css'])
-    .pipe($.rename('_normalize.scss'))
-    .pipe(gulp.dest('assets/css/1-vendor/normalize.css'));
+  var stream = gulp.src([srcAssets.styles + 'vendor/normalize.css/normalize.css'])
+    .pipe($.plumber({errorHandler: errorAlert}))
+    .pipe($.rename('normalize.scss'))
+    .pipe(gulp.dest(srcAssets.styles + 'vendor/normalize.css'));
     return stream;
 });
 
-gulp.task('default', ['html', 'styles', 'scripts', 'images'],  function() {
+gulp.task('default', ['styles', 'scripts', 'vendorScripts', 'images'],  function() {
   browserSync({
     server: {
-      baseDir: 'dist'
+      baseDir: "./"
     }
   });
-  gulp.watch('index.html', ['html', browserSync.reload]);
-  gulp.watch('assets/css/**/*.scss', ['styles', browserSync.reload]);
-  gulp.watch('assets/js/*.js', ['scripts', browserSync.reload]);
-  gulp.watch('assets/img/**/*', ['images', browserSync.reload]);
-});
-
-gulp.task('html', function() {
-  var stream = gulp.src('index.html')
-    .pipe($.htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('dist'));
-  return stream;
+  gulp.watch(srcAssets.styles + '**/*.scss', ['styles', browserSync.reload]);
+  gulp.watch(srcAssets.scripts + '*.js', ['scripts', browserSync.reload]);
+  gulp.watch(srcAssets.vendorScripts + '**/*.js', ['vendorScripts', browserSync.reload]);
+  gulp.watch(srcAssets.images, ['images', browserSync.reload]);
 });
 
 gulp.task('styles', function() {
-  return gulp.src('assets/css/main.scss')
-    .pipe($.rubySass({
-      style: 'expanded',
-      precision: 3
+  return gulp.src(srcAssets.styles + 'main.scss')
+    .pipe($.plumber({errorHandler: errorAlert}))
+    .pipe($.sass({
+      precision: 6
     }))
     .pipe($.autoprefixer({
       browsers: ['last 2 versions']
     }))
     .pipe($.minifyCss())
-    .pipe(gulp.dest('dist'));
+    .pipe($.rename({
+      suffix: ".min"
+    }))
+    .pipe(gulp.dest(destAssets.styles))
+    .pipe($.notify({
+        title: "Stylesheets recompiled",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
 });
 
 gulp.task('scripts', function() {
-  var vendor = $.filter('vendor/**/*.js');
-  var custom = $.filter(['*.js', '!vendor.min.js']);
-
-  return gulp.src('assets/js/**/*.js')
-    .pipe(vendor)
-    .pipe($.concat('vendor.min.js'))
-    .pipe($.uglify())
-    .pipe(vendor.restore())
-    .pipe(custom)
+  return gulp.src(srcAssets.scripts + '*.js')
+    .pipe($.plumber({errorHandler: errorAlert}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.concat('main.min.js'))
     .pipe($.uglify())
-    .pipe(custom.restore())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest(destAssets.scripts))
+    .pipe($.notify({
+        title: "Scripts recompiled",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
+});
+
+gulp.task('vendorScripts', function() {
+  return gulp.src(srcAssets.vendorScripts + '**/*.js')
+    .pipe($.plumber({errorHandler: errorAlert}))
+    .pipe($.concat('vendor.min.js'))
+    .pipe($.uglify())
+    .pipe(gulp.dest(destAssets.vendorScripts))
+    .pipe($.notify({
+        title: "Vendor scripts recompiled",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
 });
 
 gulp.task('images', function() {
-  return gulp.src('assets/img/**/*')
-    // .pipe($.size({
-    //   showFiles: true,
-    //   title: "Images size before optimizing:"
-    // }))
-    // .pipe($.cache($.imagemin({
-    //   optimizationLevel: 1,
-    //   progressive: true,
-    //   interlaced: true
-    // })))
-    .pipe(gulp.dest('dist'));
-    // .pipe($.size({
-    //   showFiles: true,
-    //   title: "Images size after optimizing:"
-    // }));
+  return gulp.src(srcAssets.images)
+    .pipe($.plumber({errorHandler: errorAlert}))
+    .pipe($.changed(destAssets.images))
+    .pipe($.imagemin({
+      optimizationLevel: 1,
+      progressive: true,
+      interlaced: true
+    }))
+    .pipe(gulp.dest(destAssets.images))
+    .pipe($.notify({
+        title: "Images optimized",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
 });
 
 gulp.task('clean', function() {
-  return del(['dist', 'assets/css/1-vendor/*', '!assets/css/1-vendor/_1-dir.scss', 'assets/js/vendor/*', 'assets/js/main.min.js', 'assets/js/vendor.min.js', 'bower_components'], { read: false });
+  return del(['assets/public/*', 'assets/src/scripts/vendor/*', 'assets/src/stylesheets/vendor/*', 'bower_components'], { read: false });
 });

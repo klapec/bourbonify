@@ -1,15 +1,14 @@
 {
   "name": "bourbonify",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "authors": "Andrzej Kłapeć",
   "description": "Simple boilerplate for quickly setting up a static site with Normalize, Bourbon, Neat and jQuery.",
   "license": "MIT",
   "homepage": "http://github.com/klapec/bourbonify",
-  "private": true,
   "dependencies": {
     "normalize.css": "~3.0.2",
     "bourbon": "~4.0.2",
-    "neat": "~1.6.0",
+    "neat": "~1.7.0",
     "jquery": "~2.1.1"
   }
 }
