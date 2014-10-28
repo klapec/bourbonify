@@ -51,7 +51,7 @@ gulp.task('depsDownload', function() {
 });
 
 gulp.task('depsInstall', ['depsDownload'] ,function() {
-  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'bitters/**/*', 'normalize.css/**/*']);
+  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'normalize.css/**/*']);
   var jquery = $.filter('jquery/dist/jquery.js');
   var stream = gulp.src('bower_components/**/*')
     .pipe($.plumber({errorHandler: errorAlert}))
