@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"backgr",
+				"background-color: "
+			],
+			[
 				"val",
 				"val"
 			],
@@ -55,6 +59,14 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "bourbonify.sublime-project",
+			"settings":
+			{
+				"buffer_size": 141,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -248,10 +260,27 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/Andrzej/Sites/bourbonify"
+		"/Users/Andrzej/Sites/bourbonify",
+		"/Users/Andrzej/Sites/bourbonify/assets",
+		"/Users/Andrzej/Sites/bourbonify/assets/src",
+		"/Users/Andrzej/Sites/bourbonify/assets/src/stylesheets"
 	],
 	"file_history":
 	[
+		"/Users/Andrzej/Sites/bourbonify/gulpfile.js",
+		"/Users/Andrzej/Sites/bourbonify/assets/src/stylesheets/main.scss",
+		"/Users/Andrzej/Sites/bourbonify/index.html",
+		"/Users/Andrzej/Sites/bourbonify/bower.json",
+		"/Users/Andrzej/Sites/bourbonify/assets/src/scripts/main.js",
+		"/Users/Andrzej/Sites/bourbonify/.gitignore",
+		"/Users/Andrzej/Sites/bourbonify/README.md",
+		"/Users/Andrzej/Sites/bourbonify/assets/dist/scripts/main.min.js",
+		"/Users/Andrzej/Sites/bourbonify/assets/src/stylesheets/base/_base.scss",
+		"/Users/Andrzej/Sites/bourbonify/assets/dist/stylesheets/main.min.css",
+		"/Users/Andrzej/Sites/bourbonify/package.json",
+		"/Users/Andrzej/Sites/bourbonify/assets/src/stylesheets/vendor/bourbon/app/assets/stylesheets/css3/_selection.scss",
+		"/Users/Andrzej/Sites/bourbonify/assets/public/zxczxczxc.js",
+		"/Users/Andrzej/Sites/bourbonify/bourbonify.sublime-project",
 		"/Users/Andrzej/Sites/contacts-app/assets/src/stylesheets/partials/_main-section.scss",
 		"/Users/Andrzej/Sites/contacts-app/assets/src/stylesheets/components/_lists.scss",
 		"/Users/Andrzej/Sites/contacts-app/LICENSE",
@@ -365,25 +394,11 @@
 		"/Users/Andrzej/Sites/klapec.github.io/about.md",
 		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/stylesheets/3-objects/header.scss",
 		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/stylesheets/4-components/buttons.scss",
-		"/Users/Andrzej/Sites/klapec.github.io/_posts/2014-11-17-qweqwe.md",
-		"/Users/Andrzej/Sites/klapec.github.io/_posts/2014-11-17-asdasdasd.md",
-		"/Users/Andrzej/Sites/klapec.github.io/_posts/2014-10-27-welcome-to-jekyll.markdown",
-		"/Users/Andrzej/Sites/klapec.github.io/_layouts/index.html",
-		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/scripts/vendor/headroom.js",
-		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/scripts/vendor/1-jquery.js",
-		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/scripts/vendor/_jquery.js",
-		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/scripts/vendor/jQuery.headroom.js",
-		"/Users/Andrzej/Sites/klapec.github.io/_assets/src/stylesheets/3-objects/footer.scss",
-		"/Users/Andrzej/Sites/klapec.github.io/feed.xml",
-		"/Users/Andrzej/Sites/klapec.github.io/node_modules/gulp-sass/node_modules/node-sass/node_modules/mocha/node_modules/jade/testing/layout.jade",
-		"/Users/Andrzej/Sites/klapec.github.io/node_modules/gulp-concat/node_modules/through/LICENSE.APACHE2",
-		"/Users/Andrzej/Sites/klapec.github.io/LICENSE",
-		"/Users/Andrzej/Sites/klapec.github.io/node_modules/gulp/completion/bash",
-		"/Users/Andrzej/Sites/klapec.github.io/node_modules/browser-sync/node_modules/socket.io/node_modules/engine.io/node_modules/engine.io-parser/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js"
+		"/Users/Andrzej/Sites/klapec.github.io/_posts/2014-11-17-qweqwe.md"
 	],
 	"find":
 	{
-		"height": 27.0
+		"height": 37.0
 	},
 	"find_in_files":
 	{
@@ -398,6 +413,11 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"vendor",
+			"dest",
+			"destAssets",
+			"dest",
+			"{{ site.baseurl }}",
 			"Yogscast",
 			"desc",
 			"browserSync.reload",
@@ -441,8 +461,39 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "bourbonify.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 141,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								131,
+								35
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"color_scheme": "Packages/User/Color Highlighter/themes/Tomorrow-Night (SL).tmTheme",
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -493,20 +544,24 @@
 		"selected_items":
 		[
 			[
-				"list",
-				"assets/src/stylesheets/components/_lists.scss"
+				"mainscss",
+				"assets/src/stylesheets/main.scss"
 			],
 			[
-				"sett",
-				"assets/src/stylesheets/base/_settings.scss"
+				"gulpf",
+				"gulpfile.js"
 			],
 			[
 				"gulpfi",
 				"gulpfile.js"
 			],
 			[
-				"gulpf",
-				"gulpfile.js"
+				"list",
+				"assets/src/stylesheets/components/_lists.scss"
+			],
+			[
+				"sett",
+				"assets/src/stylesheets/base/_settings.scss"
 			],
 			[
 				"index",
@@ -587,7 +642,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 233.0,
+	"side_bar_width": 243.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

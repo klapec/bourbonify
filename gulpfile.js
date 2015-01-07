@@ -15,7 +15,7 @@ var srcAssets = {
   markup        : '*.html',
   styles        : basePath.src + 'stylesheets/',
   scripts       : basePath.src + 'scripts/',
-  vendorScripts : basePath.src + 'scripts/vendor/',
+  vendorScripts : basePath.src + 'scripts/vendors/',
   images        : basePath.src + 'images/',
   svg           : basePath.src + 'svg/'
 };
@@ -56,15 +56,15 @@ gulp.task('depsDownload', function() {
 gulp.task('depsInstall', ['depsDownload'] ,function() {
   var stream = gulp.src('bower_components/**/*')
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe(gulp.dest(srcAssets.styles + 'vendor'))
+    .pipe(gulp.dest(srcAssets.styles + 'vendors'))
     return stream;
 });
 
 gulp.task('depsFix', ['depsInstall'], function() {
-  var stream = gulp.src([srcAssets.styles + 'vendor/normalize.css/normalize.css'])
+  var stream = gulp.src([srcAssets.styles + 'vendors/normalize.css/normalize.css'])
     .pipe($.plumber({errorHandler: errorAlert}))
     .pipe($.rename('_normalize.scss'))
-    .pipe(gulp.dest(srcAssets.styles + 'vendor/normalize.css'));
+    .pipe(gulp.dest(srcAssets.styles + 'vendors/normalize.css'));
     return stream;
 });
 
@@ -128,7 +128,7 @@ gulp.task('scripts', function() {
 gulp.task('vendorScripts', function() {
   return gulp.src(srcAssets.vendorScripts + '**/*.js')
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe($.concat('vendor.min.js'))
+    .pipe($.concat('vendors.min.js'))
     .pipe($.uglify())
     .pipe(gulp.dest(distAssets.vendorScripts))
     .pipe($.notify({
@@ -169,5 +169,5 @@ gulp.task('svg', function() {
 });
 
 gulp.task('clean', function() {
-  return del(['assets/dist/*', 'assets/src/scripts/vendor/*', 'assets/src/stylesheets/vendor/*', 'bower_components'], { read: false });
+  return del(['assets/dist/*', 'assets/src/scripts/vendors/*', 'assets/src/stylesheets/vendors/*', 'bower_components'], { read: false });
 });

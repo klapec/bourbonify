@@ -2,3 +2,4 @@
 node_modules
 bower_components
 bourbonify.sublime-project
+assets/src/stylesheets/vendors/*
