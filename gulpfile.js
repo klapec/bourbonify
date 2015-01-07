@@ -3,11 +3,12 @@ var gutil         = require('gulp-util');
 var browserSync   = require('browser-sync');
 var del           = require('del');
 var jshintStylish = require('jshint-stylish');
+var sass          = require('gulp-ruby-sass');
 var $             = require('gulp-load-plugins')();
 
 var basePath = {
   src   : 'assets/src/',
-  dest  : 'assets/public/'
+  dist  : 'assets/dist/'
 };
 
 var srcAssets = {
@@ -15,14 +16,16 @@ var srcAssets = {
   styles        : basePath.src + 'stylesheets/',
   scripts       : basePath.src + 'scripts/',
   vendorScripts : basePath.src + 'scripts/vendor/',
-  images        : basePath.src + 'images/**/*'
+  images        : basePath.src + 'images/',
+  svg           : basePath.src + 'svg/'
 };
 
-var destAssets = {
-  styles        : basePath.dest + 'stylesheets/',
-  scripts       : basePath.dest + 'scripts/',
-  vendorScripts : basePath.dest + 'scripts/',
-  images        : basePath.dest + 'images/'
+var distAssets = {
+  styles        : basePath.dist + 'stylesheets/',
+  scripts       : basePath.dist + 'scripts/',
+  vendorScripts : basePath.dist + 'scripts/',
+  images        : basePath.dist + 'images/',
+  svg           : basePath.dist + 'svg/'
 };
 
 function errorAlert(err) {
@@ -51,23 +54,16 @@ gulp.task('depsDownload', function() {
 });
 
 gulp.task('depsInstall', ['depsDownload'] ,function() {
-  var cssStack = $.filter(['bourbon/**/*', 'neat/**/*', 'normalize.css/**/*']);
-  var jquery = $.filter('jquery/dist/jquery.js');
   var stream = gulp.src('bower_components/**/*')
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe(cssStack)
     .pipe(gulp.dest(srcAssets.styles + 'vendor'))
-    .pipe(cssStack.restore())
-    .pipe(jquery)
-    .pipe(gulp.dest(srcAssets.scripts + 'vendor'))
-    .pipe(jquery.restore());
     return stream;
 });
 
 gulp.task('depsFix', ['depsInstall'], function() {
   var stream = gulp.src([srcAssets.styles + 'vendor/normalize.css/normalize.css'])
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe($.rename('normalize.scss'))
+    .pipe($.rename('_normalize.scss'))
     .pipe(gulp.dest(srcAssets.styles + 'vendor/normalize.css'));
     return stream;
 });
@@ -76,13 +72,15 @@ gulp.task('default', ['styles', 'scripts', 'vendorScripts', 'images'],  function
   browserSync({
     server: {
       baseDir: "./"
-    }
+    },
+    notify: false
   });
   gulp.watch(srcAssets.markup, ['markup', browserSync.reload]);
-  gulp.watch(srcAssets.styles + '**/*.scss', ['styles', browserSync.reload]);
-  gulp.watch(srcAssets.scripts + '*.js', ['scripts', browserSync.reload]);
-  gulp.watch(srcAssets.vendorScripts + '**/*.js', ['vendorScripts', browserSync.reload]);
+  gulp.watch(srcAssets.styles + '**/*', ['styles', browserSync.reload]);
+  gulp.watch(srcAssets.scripts + '*', ['scripts', browserSync.reload]);
+  gulp.watch(srcAssets.vendorScripts + '**/*', ['vendorScripts', browserSync.reload]);
   gulp.watch(srcAssets.images, ['images', browserSync.reload]);
+  gulp.watch(srcAssets.svg + '**/*', ['svg', browserSync.reload]);
 });
 
 gulp.task('markup', function() {
@@ -95,19 +93,16 @@ gulp.task('markup', function() {
 });
 
 gulp.task('styles', function() {
-  return gulp.src(srcAssets.styles + 'main.scss')
+  return sass(srcAssets.styles) 
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe($.sass({
-      precision: 6
-    }))
     .pipe($.autoprefixer({
-      browsers: ['last 2 versions']
+      browsers: ['> 1%', 'last 2 versions', 'Firefox ESR', 'Android >= 4']
     }))
     .pipe($.minifyCss())
     .pipe($.rename({
       suffix: ".min"
     }))
-    .pipe(gulp.dest(destAssets.styles))
+    .pipe(gulp.dest(distAssets.styles))
     .pipe($.notify({
         title: "Stylesheets recompiled",
         message: "<%= file.relative %>",
@@ -122,7 +117,7 @@ gulp.task('scripts', function() {
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.concat('main.min.js'))
     .pipe($.uglify())
-    .pipe(gulp.dest(destAssets.scripts))
+    .pipe(gulp.dest(distAssets.scripts))
     .pipe($.notify({
         title: "Scripts recompiled",
         message: "<%= file.relative %>",
@@ -135,7 +130,7 @@ gulp.task('vendorScripts', function() {
     .pipe($.plumber({errorHandler: errorAlert}))
     .pipe($.concat('vendor.min.js'))
     .pipe($.uglify())
-    .pipe(gulp.dest(destAssets.vendorScripts))
+    .pipe(gulp.dest(distAssets.vendorScripts))
     .pipe($.notify({
         title: "Vendor scripts recompiled",
         message: "<%= file.relative %>",
@@ -144,15 +139,14 @@ gulp.task('vendorScripts', function() {
 });
 
 gulp.task('images', function() {
-  return gulp.src(srcAssets.images)
+  return gulp.src(srcAssets.images + '**/*')
     .pipe($.plumber({errorHandler: errorAlert}))
-    .pipe($.changed(destAssets.images))
+    .pipe($.changed(distAssets.images))
     .pipe($.imagemin({
-      optimizationLevel: 1,
       progressive: true,
       interlaced: true
     }))
-    .pipe(gulp.dest(destAssets.images))
+    .pipe(gulp.dest(distAssets.images))
     .pipe($.notify({
         title: "Images optimized",
         message: "<%= file.relative %>",
@@ -160,6 +154,20 @@ gulp.task('images', function() {
     }));
 });
 
+gulp.task('svg', function() {
+  return gulp.src(srcAssets.svg + '*')
+    .pipe($.plumber({errorHandler: errorAlert}))
+    .pipe($.changed(distAssets.svg))
+    .pipe($.imagemin())
+    .pipe($.svgstore({ fileName: 'sprite.svg', prefix: 'icon-' }))
+    .pipe(gulp.dest(distAssets.svg))
+    .pipe($.notify({
+        title: "SVGs optimized",
+        message: "<%= file.relative %>",
+        sound: "Glass"
+    }));
+});
+
 gulp.task('clean', function() {
-  return del(['assets/public/*', 'assets/src/scripts/vendor/*', 'assets/src/stylesheets/vendor/*', 'bower_components'], { read: false });
+  return del(['assets/dist/*', 'assets/src/scripts/vendor/*', 'assets/src/stylesheets/vendor/*', 'bower_components'], { read: false });
 });
