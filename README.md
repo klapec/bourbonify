@@ -34,20 +34,21 @@ There are few gulp tasks present in the gulpfile.
 ├── assets
 │   ├── dist
 │   └── src
-│       ├── images
-│       ├── scripts
-│       │   ├── main.js
-│       │   └── vendors
-│       ├── stylesheets
-│       │   ├── base
-│       │   ├── components
-│       │   ├── main.scss
-│       │   ├── pages
-│       │   ├── partials
-│       │   ├── themes
-│       │   ├── utils
-│       │   └── vendors
-│       └── svg
+│   │   ├── images
+│   │   ├── scripts
+│   │   │   ├── main.js
+│   │   │   └── vendors
+│   │   │   │   └── svg4everybody.js
+│   │   ├── stylesheets
+│   │   │   ├── base
+│   │   │   ├── components
+│   │   │   ├── main.scss
+│   │   │   ├── pages
+│   │   │   ├── partials
+│   │   │   ├── themes
+│   │   │   ├── utils
+│   │   │   └── vendors
+│   │   └── svg
 ├── LICENSE
 ├── README.md
 ├── bower.json
